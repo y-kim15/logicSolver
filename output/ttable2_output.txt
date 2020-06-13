@@ -1,0 +1,196 @@
+
+-----Example of default behaviour - same as ttable------
+bash-4.3$ ./ttable2 3 'ac#1&-a-0|b=->'
+a b c : ac#1&-a-0|b=-> : Result
+===============================
+0 0 0 :   0 01 1 1 011 :   1
+0 0 1 :   1 10 1 1 011 :   1
+0 1 0 :   0 01 1 1 100 :   0
+0 1 1 :   1 10 1 1 101 :   1
+1 0 0 :   1 10 0 0 101 :   1
+1 0 1 :   0 01 0 0 100 :   0
+1 1 0 :   1 10 0 0 011 :   1
+1 1 1 :   0 01 0 0 011 :   1
+
+-----Example of -ps printing status of formula ------
+bash-4.3$ ./ttable2 -ps 3 '-((a#c)&1) > -((-a|0)=b)'
+a b c : ac#1&-a-0|b=-> : Result
+===============================
+0 0 0 :   0 01 1 1 011 :   1
+0 0 1 :   1 10 1 1 011 :   1
+0 1 0 :   0 01 1 1 100 :   0
+0 1 1 :   1 10 1 1 101 :   1
+1 0 0 :   1 10 0 0 101 :   1
+1 0 1 :   0 01 0 0 100 :   0
+1 1 0 :   1 10 0 0 011 :   1
+1 1 1 :   0 01 0 0 011 :   1
+satisfiable|invalid
+
+---Example of -ps that is a tautology
+bash-4.3$ ./ttable2 -ps 3 '(((a&b) > c) & (a > b))>(a>c)'
+a b c : ab&c>ab>&ac>> : Result
+==============================
+0 0 0 :   0 1  11  11 :   1
+0 0 1 :   0 1  11  11 :   1
+0 1 0 :   0 1  11  11 :   1
+0 1 1 :   0 1  11  11 :   1
+1 0 0 :   0 1  00  01 :   1
+1 0 1 :   0 1  00  11 :   1
+1 1 0 :   1 0  10  01 :   1
+1 1 1 :   1 1  11  11 :   1
+valid(tautology)
+
+
+-----Example of -pt, printing only true values----------
+bash-4.3$ ./ttable2 -pt 3 '-((a#c)&1) > -((-a|0)=b)'
+a b c : ac#1&-a-0|b=-> : Result
+===============================
+0 0 0 :   0 01 1 1 011 :   1
+0 0 1 :   1 10 1 1 011 :   1
+0 1 1 :   1 10 1 1 101 :   1
+1 0 0 :   1 10 0 0 101 :   1
+1 1 0 :   1 10 0 0 011 :   1
+1 1 1 :   0 01 0 0 011 :   1
+
+-----Example of -dbs, printing results of 'ab#' where the first is true-----
+bash-4.3$ ./ttable2 -dbs 3 '-((a#c)&1) > -((-a|0)=b)' 'ab#'
+a b c : ab# : Result
+====================
+0 0 0 :   0 :   0
+0 0 1 :   0 :   0
+0 1 1 :   1 :   1
+1 0 0 :   1 :   1
+1 1 0 :   0 :   0
+1 1 1 :   0 :   0
+
+-----Example of -ce, checking equivalence of the two formula ------
+bash-4.3$ ./ttable2 -ce 3 '-((a#c)&1) > -((-a|0)=b)' 'ab#'
+a b c : ac#1&-a-0|b=-> : Result
+===============================
+0 0 0 :   0 01 1 1 011 :   1
+0 0 1 :   1 10 1 1 011 :   1
+0 1 0 :   0 01 1 1 100 :   0
+0 1 1 :   1 10 1 1 101 :   1
+1 0 0 :   1 10 0 0 101 :   1
+1 0 1 :   0 01 0 0 100 :   0
+1 1 0 :   1 10 0 0 011 :   1
+1 1 1 :   0 01 0 0 011 :   1
+
+a b c : ab# : Result
+====================
+0 0 0 :   0 :   0
+0 0 1 :   0 :   0
+0 1 0 :   1 :   1
+0 1 1 :   1 :   1
+1 0 0 :   1 :   1
+1 0 1 :   1 :   1
+1 1 0 :   0 :   0
+1 1 1 :   0 :   0
+
+Two formulae are not equivalent
+
+---Example where two equal formula written in different notation are compared, infix and postfix-------
+bash-4.3$ ./ttable2 -ce 3 '(((a&b) > c) & (a > b))>(a>c)' 'ab&c>ab>&ac>>'
+a b c : ab&c>ab>&ac>> : Result
+==============================
+0 0 0 :   0 1  11  11 :   1
+0 0 1 :   0 1  11  11 :   1
+0 1 0 :   0 1  11  11 :   1
+0 1 1 :   0 1  11  11 :   1
+1 0 0 :   0 1  00  01 :   1
+1 0 1 :   0 1  00  11 :   1
+1 1 0 :   1 0  10  01 :   1
+1 1 1 :   1 1  11  11 :   1
+Two formulae are equal.
+
+
+-----Example of using -ps -pt together for one formula
+bash-4.3$ ./ttable2 -ps -pt 3 'ac#1&-a-0|b=->'
+a b c : ac#1&-a-0|b=-> : Result
+===============================
+0 0 0 :   0 01 1 1 011 :   1
+0 0 1 :   1 10 1 1 011 :   1
+0 1 1 :   1 10 1 1 101 :   1
+1 0 0 :   1 10 0 0 101 :   1
+1 1 0 :   1 10 0 0 011 :   1
+1 1 1 :   0 01 0 0 011 :   1
+satisfiable|invalid
+
+
+
+-----Example of using -ce and -ps together, since they are different, it prints out ------
+-----two tables and status for each one------
+bash-4.3$ ./ttable2 -ce -ps 3 '-((a#c)&1) > -((-a|0)=b)' 'ab#'
+a b c : ac#1&-a-0|b=-> : Result
+===============================
+0 0 0 :   0 01 1 1 011 :   1
+0 0 1 :   1 10 1 1 011 :   1
+0 1 0 :   0 01 1 1 100 :   0
+0 1 1 :   1 10 1 1 101 :   1
+1 0 0 :   1 10 0 0 101 :   1
+1 0 1 :   0 01 0 0 100 :   0
+1 1 0 :   1 10 0 0 011 :   1
+1 1 1 :   0 01 0 0 011 :   1
+satisfiable|invalid
+
+a b c : ab# : Result
+====================
+0 0 0 :   0 :   0
+0 0 1 :   0 :   0
+0 1 0 :   1 :   1
+0 1 1 :   1 :   1
+1 0 0 :   1 :   1
+1 0 1 :   1 :   1
+1 1 0 :   0 :   0
+1 1 1 :   0 :   0
+satisfiable|invalid
+
+Two formulae are not equivalent
+
+-----Example of using -ce and -pt, for two different formula, only prints out------
+-----true answers for each-----
+bash-4.3$ ./ttable2 -ce -pt 3 '-((a#c)&1) > -((-a|0)=b)' 'ab#'
+a b c : ac#1&-a-0|b=-> : Result
+===============================
+0 0 0 :   0 01 1 1 011 :   1
+0 0 1 :   1 10 1 1 011 :   1
+0 1 1 :   1 10 1 1 101 :   1
+1 0 0 :   1 10 0 0 101 :   1
+1 1 0 :   1 10 0 0 011 :   1
+1 1 1 :   0 01 0 0 011 :   1
+
+a b c : ab# : Result
+====================
+0 1 0 :   1 :   1
+0 1 1 :   1 :   1
+1 0 0 :   1 :   1
+1 0 1 :   1 :   1
+
+Two formulae are not equivalent
+
+
+-----Example of using -ce, -pt and -ps fro two different formula, gives true solutions and status------
+-----for each table.-----
+bash-4.3$ ./ttable2 -ce -pt -ps 3 '-((a#c)&1) > -((-a|0)=b)' 'ab#'
+a b c : ac#1&-a-0|b=-> : Result
+===============================
+0 0 0 :   0 01 1 1 011 :   1
+0 0 1 :   1 10 1 1 011 :   1
+0 1 1 :   1 10 1 1 101 :   1
+1 0 0 :   1 10 0 0 101 :   1
+1 1 0 :   1 10 0 0 011 :   1
+1 1 1 :   0 01 0 0 011 :   1
+satisfiable|invalid
+
+a b c : ab# : Result
+====================
+0 1 0 :   1 :   1
+0 1 1 :   1 :   1
+1 0 0 :   1 :   1
+1 0 1 :   1 :   1
+satisfiable|invalid
+
+Two formulae are not equivalent
+
+
+
